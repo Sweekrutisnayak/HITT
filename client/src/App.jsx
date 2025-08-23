@@ -1,4 +1,5 @@
 // App.jsx
+import { API_URL } from './config';
 import React, { useState, useEffect, useMemo } from 'react';
 import logoImage from './assets/logo.png';
 import './App.css';
@@ -157,7 +158,7 @@ const AuthPage = ({ setPage, setIsLoggedIn, setCurrentUser, setIsFirstLogin, rol
 
         // For patients, we fetch their history on login
         if (userWithPID.userType === 'Patient') {
-            const historyRes = await fetch(`http://localhost:5001/api/history/${data.user._id}`, {
+            const historyRes = await fetch(`https://hitt-backend.onrender.com/api/history/${data.user._id}`, {
                 headers: { 'Authorization': `Bearer ${data.token}` }
             });
             const historyData = await historyRes.json();
@@ -179,7 +180,7 @@ const AuthPage = ({ setPage, setIsLoggedIn, setCurrentUser, setIsFirstLogin, rol
                 return;
             }
             try {
-                const res = await fetch('http://localhost:5001/api/register', {
+                const res = await fetch('https://hitt-backend.onrender.com/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, phone, password, userType, name, dob })
@@ -203,7 +204,7 @@ const AuthPage = ({ setPage, setIsLoggedIn, setCurrentUser, setIsFirstLogin, rol
             }
         } else if (isForgotPassword) {
             try {
-                const res = await fetch('http://localhost:5001/api/forgot-password', {
+                const res = await fetch('https://hitt-backend.onrender.com/api/forgot-password', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
@@ -226,7 +227,7 @@ const AuthPage = ({ setPage, setIsLoggedIn, setCurrentUser, setIsFirstLogin, rol
             }
         } else { // Login
             try {
-                const res = await fetch('http://localhost:5001/api/login', {
+                const res = await fetch('https://hitt-backend.onrender.com/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
@@ -247,7 +248,7 @@ const AuthPage = ({ setPage, setIsLoggedIn, setCurrentUser, setIsFirstLogin, rol
         setError('');
         setMessage('');
         try {
-            const res = await fetch('http://localhost:5001/api/verify-registration', {
+            const res = await fetch('https://hitt-backend.onrender.com/api/verify-registration', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...tempData, otp })
@@ -266,7 +267,7 @@ const AuthPage = ({ setPage, setIsLoggedIn, setCurrentUser, setIsFirstLogin, rol
         setError('');
         setMessage('');
         try {
-            const res = await fetch('http://localhost:5001/api/resend-otp', {
+            const res = await fetch('https://hitt-backend.onrender.com/api/resend-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: tempData.email })
@@ -411,7 +412,7 @@ const ResetPasswordPage = ({ setPage }) => {
         }
 
         try {
-            const res = await fetch('http://localhost:5001/api/reset-password', {
+            const res = await fetch('https://hitt-backend.onrender.com/api/reset-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token, newPassword })
@@ -818,7 +819,7 @@ const EditProfileModal = ({ currentUser, onClose, onSave }) => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('userToken');
-            const res = await fetch('http://localhost:5001/api/update-profile', {
+            const res = await fetch('https://hitt-backend.onrender.com/api/update-profile', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -891,7 +892,7 @@ const RegisterPatientForm = ({ onRegister }) => {
         setMessage('');
 
         try {
-            const res = await fetch('http://localhost:5001/api/counselor/register-patient', {
+            const res = await fetch('https://hitt-backend.onrender.com/api/counselor/register-patient', {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -937,7 +938,7 @@ const CounselorDashboard = ({ currentUser }) => {
         const fetchPatients = async () => {
             try {
                 const token = localStorage.getItem('userToken');
-                const res = await fetch('http://localhost:5001/api/counselor/patients', {
+                const res = await fetch('https://hitt-backend.onrender.com/api/counselor/patients', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -977,8 +978,8 @@ const CounselorDashboard = ({ currentUser }) => {
                 const token = localStorage.getItem('userToken');
                 try {
                     const [historyRes, statusRes] = await Promise.all([
-                        fetch(`http://localhost:5001/api/history/${patient._id}`, { headers: { 'Authorization': `Bearer ${token}` } }),
-                        fetch(`http://localhost:5001/api/counselor/submission-status/${patient._id}`, { headers: { 'Authorization': `Bearer ${token}` } })
+                        fetch(`https://hitt-backend.onrender.com/api/history/${patient._id}`, { headers: { 'Authorization': `Bearer ${token}` } }),
+                        fetch(`https://hitt-backend.onrender.com/api/counselor/submission-status/${patient._id}`, { headers: { 'Authorization': `Bearer ${token}` } })
                     ]);
     
                     const historyData = await historyRes.json();
@@ -1028,7 +1029,7 @@ const CounselorDashboard = ({ currentUser }) => {
                 formData.append('patientPID', patient.pid);
                 const token = localStorage.getItem('userToken');
 
-                const uploadRes = await fetch('http://localhost:5001/api/upload-sample', {
+                const uploadRes = await fetch('https://hitt-backend.onrender.com/api/upload-sample', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` },
                     body: formData
@@ -1067,7 +1068,7 @@ const CounselorDashboard = ({ currentUser }) => {
             setShowConsentModal(false);
             try {
                 const token = localStorage.getItem('userToken');
-                await fetch('http://localhost:5001/api/counselor/consent', {
+                await fetch('https://hitt-backend.onrender.com/api/counselor/consent', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1097,7 +1098,7 @@ const CounselorDashboard = ({ currentUser }) => {
 
             try {
                 const token = localStorage.getItem('userToken');
-                const res = await fetch('http://localhost:5001/api/save-analysis', {
+                const res = await fetch('https://hitt-backend.onrender.com/api/save-analysis', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1242,7 +1243,7 @@ const GraphologistDashboard = ({ currentUser }) => {
         const fetchSamples = async () => {
             try {
                 const token = localStorage.getItem('userToken');
-                const res = await fetch('http://localhost:5001/api/graphologist/pending-samples', {
+                const res = await fetch('https://hitt-backend.onrender.com/api/graphologist/pending-samples', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -1268,7 +1269,7 @@ const GraphologistDashboard = ({ currentUser }) => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('userToken');
-            const res = await fetch('http://localhost:5001/api/graphologist/submit-review', {
+            const res = await fetch('https://hitt-backend.onrender.com/api/graphologist/submit-review', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1386,7 +1387,7 @@ const ResearcherDashboard = ({ currentUser }) => {
         const fetchStats = async () => {
             try {
                 const token = localStorage.getItem('userToken');
-                const res = await fetch('http://localhost:5001/api/researcher/statistics', {
+                const res = await fetch('https://hitt-backend.onrender.com/api/researcher/statistics', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -1401,7 +1402,7 @@ const ResearcherDashboard = ({ currentUser }) => {
     const handleExport = async () => {
         try {
             const token = localStorage.getItem('userToken');
-            const res = await fetch('http://localhost:5001/api/researcher/export', {
+            const res = await fetch('https://hitt-backend.onrender.com/api/researcher/export', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const blob = await res.blob();
@@ -1519,7 +1520,7 @@ const PatientDashboard = ({ currentUser }) => {
         const fetchHistory = async () => {
             try {
                 const token = localStorage.getItem('userToken');
-                const res = await fetch(`http://localhost:5001/api/history/${currentUser._id}`, {
+                const res = await fetch(`https://hitt-backend.onrender.com/api/history/${currentUser._id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!res.ok) throw new Error('Failed to fetch history');
@@ -1598,7 +1599,7 @@ const GraphologistHistory = ({ currentUser }) => {
         const fetchReviews = async () => {
             try {
                 const token = localStorage.getItem('userToken');
-                const res = await fetch(`http://localhost:5001/api/graphologist/reviews/${currentUser._id}`, {
+                const res = await fetch(`https://hitt-backend.onrender.com/api/graphologist/reviews/${currentUser._id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (!res.ok) throw new Error('Failed to fetch reviews');
@@ -1733,7 +1734,7 @@ export default function App() {
             if (savedToken) {
                 const fetchUser = async () => {
                     try {
-                        const res = await fetch('http://localhost:5001/api/get-user', {
+                        const res = await fetch('https://hitt-backend.onrender.com/api/get-user', {
                            headers: { 'Authorization': `Bearer ${savedToken}` }
                         });
                         if(res.ok) {
@@ -1746,7 +1747,7 @@ export default function App() {
                             setIsLoggedIn(true);
                             
                             // Fetch history for all roles on login
-                            const historyRes = await fetch(`http://localhost:5001/api/history/${userWithPID._id}`, {
+                            const historyRes = await fetch(`https://hitt-backend.onrender.com/api/history/${userWithPID._id}`, {
                                 headers: { 'Authorization': `Bearer ${savedToken}` }
                             });
                             const historyData = await historyRes.json();
