@@ -50,12 +50,16 @@ const upload = multer({
 });
 
 // --- Database Connection ---
+const sanitizedUri = process.env.MONGO_URI.replace(/:([^:]*)@/, ':*****@');
+console.log('Attempting to connect with URI:', sanitizedUri);
+
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB Connected...'))
-    .catch(err => {
-        console.error('MongoDB Connection Error:', err.message);
-        process.exit(1);
-    });
+    .then(() => console.log('MongoDB Connected...'))
+    .catch(err => {
+        console.error('MongoDB Connection Error:', err.message);
+        process.exit(1);
+    });
+
 
 // --- Schemas ---
 const UserSchema = new mongoose.Schema({
